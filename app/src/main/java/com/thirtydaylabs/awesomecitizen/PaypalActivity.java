@@ -6,12 +6,27 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.paypal.android.sdk.payments.PayPalAuthorization;
+import com.paypal.android.sdk.payments.PayPalConfiguration;
+import com.paypal.android.sdk.payments.PayPalFuturePaymentActivity;
+import com.paypal.android.sdk.payments.PayPalPayment;
+import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
 import com.thirtydaylabs.awesomecitizen.R;
+
+import org.json.JSONException;
+
+import java.math.BigDecimal;
 
 public class PaypalActivity extends Activity {
 
@@ -39,6 +54,74 @@ public class PaypalActivity extends Activity {
 
         qr = BitmapFactory.decodeResource(this.getResources(),
                 R.drawable.ic_qr_code);
+
+
+        paypalInitPayment();
+
+
+
+    }
+
+
+
+    private static PayPalConfiguration config = new PayPalConfiguration()
+
+            // Start with mock environment.  When ready, switch to sandbox (ENVIRONMENT_SANDBOX)
+            // or live (ENVIRONMENT_PRODUCTION)
+            .environment(PayPalConfiguration.ENVIRONMENT_NO_NETWORK)
+
+            .clientId("AcJBSRAIdPsTuQj79ykpjN4WwA6ceFfsVsrGXexxRZFckiYVh953Dv5360fO");
+
+
+    public void paypalInitPayment(){
+        Intent intent = new Intent(this, PayPalService.class);
+
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
+
+        startService(intent);
+
+
+
+        PayPalPayment payment = new PayPalPayment(new BigDecimal("1.75"), "USD", "hipster jeans",
+                PayPalPayment.PAYMENT_INTENT_SALE);
+
+        Intent paymentIntent = new Intent(this, PaymentActivity.class);
+
+        paymentIntent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment);
+
+        startActivityForResult(paymentIntent, 0);
+    }
+
+
+
+
+    @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            PaymentConfirmation confirm = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+            if (confirm != null) {
+                try {
+                    Log.i("paymentExample", confirm.toJSONObject().toString(4));
+
+                    // TODO: send 'confirm' to your server for verification.
+                    // see https://developer.paypal.com/webapps/developer/docs/integration/mobile/verify-mobile-payment/
+                    // for more details.
+                    PaymentConfirmationNotification();
+
+                } catch (JSONException e) {
+                    Log.e("paymentExample", "an extremely unlikely failure occurred: ", e);
+                }
+            }
+        }
+        else if (resultCode == Activity.RESULT_CANCELED) {
+            Log.i("paymentExample", "The user canceled.");
+        }
+        else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
+            Log.i("paymentExample", "An invalid Payment or PayPalConfiguration was submitted. Please see the docs.");
+        }
+    }
+
+    private void PaymentConfirmationNotification() {
 
         int notificationId = 1;
         // Build intent for notification content
@@ -95,9 +178,14 @@ public class PaypalActivity extends Activity {
                 NotificationManagerCompat.from(this);
         notificationManager.notify(notificationId, notif);
 
-
     }
 
+
+    @Override
+    protected void onStop() {
+        stopService(new Intent(this, PayPalService.class));
+        super.onStop();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
