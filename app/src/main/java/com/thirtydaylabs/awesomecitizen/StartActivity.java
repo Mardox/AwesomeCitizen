@@ -1,28 +1,22 @@
 package com.thirtydaylabs.awesomecitizen;
 
-
+import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.WearableExtender;
-import android.support.v4.app.NotificationCompat.BigTextStyle;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 
-public class MainActivity extends ActionBarActivity {
+import com.thirtydaylabs.awesomecitizen.R;
+
+public class StartActivity extends Activity {
 
     int notificationId = 0;
 
@@ -33,15 +27,8 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
-        }
-
+        setContentView(R.layout.activity_start);
         init();
 
 
@@ -62,6 +49,7 @@ public class MainActivity extends ActionBarActivity {
         qr = BitmapFactory.decodeResource(this.getResources(),
                 R.drawable.ic_qr_code);
 
+
         startBT = (Button) findViewById(R.id.start_bt);
 
         startBT.setOnClickListener(new View.OnClickListener() {
@@ -70,6 +58,8 @@ public class MainActivity extends ActionBarActivity {
                 InitiateRestaurantSearch();
             }
         });
+
+
 
     }
 
@@ -122,7 +112,7 @@ public class MainActivity extends ActionBarActivity {
         offerWearableExtender.setHintHideIcon(true);
 
         // Create a big text style for the second page
-        BigTextStyle offerPageStyle = new NotificationCompat.BigTextStyle();
+        NotificationCompat.BigTextStyle offerPageStyle = new NotificationCompat.BigTextStyle();
         offerPageStyle.bigText("Crispy Fish: $5");
 
 
@@ -158,8 +148,8 @@ public class MainActivity extends ActionBarActivity {
         wearableExtender.setBackground(restaurant);
         wearableExtender.addPage(offerPageNotification);
         wearableExtender.addPage(thirdPageNotification);
-        wearableExtender.addAction(addRewardAction);
         wearableExtender.addAction(buyWithPayPal);
+        wearableExtender.addAction(addRewardAction);
 
 
         // Create a NotificationCompat.Builder to build a standard notification
@@ -186,7 +176,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.start, menu);
         return true;
     }
 
@@ -200,21 +190,5 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
     }
 }

@@ -15,44 +15,36 @@ import com.thirtydaylabs.awesomecitizen.R;
 
 public class PaypalActivity extends Activity {
 
+
+    int notificationId = 1;
+
+    Bitmap icon,restaurant,food,qr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paypal);
 
+        //Cancel the previous notification
         NotificationManagerCompat.from(this).cancel(0);
 
-
-        Bitmap icon = BitmapFactory.decodeResource(this.getResources(),
+        icon = BitmapFactory.decodeResource(this.getResources(),
                 R.drawable.ic_launcher);
 
-        Bitmap restaurant = BitmapFactory.decodeResource(this.getResources(),
+        restaurant = BitmapFactory.decodeResource(this.getResources(),
                 R.drawable.restaurant);
 
-        Bitmap food = BitmapFactory.decodeResource(this.getResources(),
+        food = BitmapFactory.decodeResource(this.getResources(),
                 R.drawable.crispy_fish);
 
-        Bitmap qr = BitmapFactory.decodeResource(this.getResources(),
+        qr = BitmapFactory.decodeResource(this.getResources(),
                 R.drawable.ic_qr_code);
 
         int notificationId = 1;
         // Build intent for notification content
-        Intent viewIntent = new Intent(this, RewardActivity.class);
-        PendingIntent viewPendingIntent =
-                PendingIntent.getActivity(this, 0, viewIntent, 0);
-
-
-
-        // Create builder for the main notification
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_launcher)
-                        .setLargeIcon(restaurant)
-                        .setContentTitle("Good choice!")
-                        .setContentText("Your meal will be ready in 6 Minutes...")
-                        .setContentIntent(viewPendingIntent)
-                        .extend(new NotificationCompat.WearableExtender().setBackground(restaurant));
-
+        Intent paypalIntent = new Intent(this, PaypalActivity.class);
+        PendingIntent paypalPendingIntent =
+                PendingIntent.getActivity(this, 0, paypalIntent, 0);
 
 
         NotificationCompat.BigPictureStyle thirdPageStyle = new NotificationCompat.BigPictureStyle();
@@ -60,34 +52,48 @@ public class PaypalActivity extends Activity {
         thirdPageStyle.bigPicture(qr);
 
 
-        // Build an intent for an action to view a map
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW);
-        PendingIntent mapPendingIntent =
-                PendingIntent.getActivity(this, 0, mapIntent, 0);
+        NotificationCompat.BigPictureStyle qrImagePageStyle = new NotificationCompat.BigPictureStyle();
+        qrImagePageStyle.bigPicture(qr);
+
+        // Create a WearableExtender to add functionality for wearables
+        NotificationCompat.WearableExtender foodWearableExtender =
+                new NotificationCompat.WearableExtender();
+        foodWearableExtender.setHintHideIcon(true)
+                .setHintShowBackgroundOnly(true);
 
         // Create second page notification
-        Notification thirdPageNotification =
+        Notification qrPageNotification =
                 new NotificationCompat.Builder(this)
-                        .setStyle(thirdPageStyle)
+                        .setStyle(qrImagePageStyle)
+                        .extend(foodWearableExtender)
                         .build();
 
-        // Add second page with wearable extender and extend the main notification
-        Notification twoPageNotification =
-                new NotificationCompat.WearableExtender()
-                        .addPage(thirdPageNotification)
-                        .extend(notificationBuilder)
-                        .build();
 
+        // Create a WearableExtender to add functionality for wearables
+        NotificationCompat.WearableExtender wearableExtender =
+                new NotificationCompat.WearableExtender();
+        wearableExtender.setHintHideIcon(false);
+        wearableExtender.setBackground(food);
+        wearableExtender.addPage(qrPageNotification);
+
+
+        // Create a NotificationCompat.Builder to build a standard notification
+        // then extend it with the WearableExtender
+        Notification notif = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("Good choice!")
+                .setContentText("Your meal will be ready in 6 Minutes...")
+                .setContentIntent(paypalPendingIntent)
+                .extend(wearableExtender)
+                .build();
 
         // Get an instance of the NotificationManager service
-        NotificationManagerCompat notificationManager =
-                NotificationManagerCompat.from(this);
-
+        NotificationManagerCompat notificationManager;
 
         // Issue the notification
         notificationManager =
                 NotificationManagerCompat.from(this);
-        notificationManager.notify(notificationId, twoPageNotification);
+        notificationManager.notify(notificationId, notif);
 
 
     }

@@ -8,7 +8,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_reward">RewardActivity</string>
     <string name="title_activity_notification_action">NotificationActionActivity</string>
-    <string name="add_reward">Add For Later</string>
+    <string name="add_reward">Keep For Later</string>
     <string name="buy_paypal">Order With Paypal</string>
     <string name="title_activity_paypal">PaypalActivity</string>
     <string name="title_activity_restaurant">RestaurantActivity</string>
@@ -19,5 +19,8 @@
     <string name="start_geo_fence">Start Monitoring</string>
     <string name="awesome_citizen">Awesome Citizen</string>
     <string name="order_in_progress">Order in Progress</string>
+    <string name="title_activity_start">StartActivity</string>
+    <string name="offer_added">Special Offer Added!</string>
+    <string name="time_to_redeem">Redeem in 5:54 Minutes!</string>
 
 </resources>
