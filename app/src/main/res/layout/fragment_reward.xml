@@ -27,7 +27,7 @@
     <ImageView
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="250dp"
         android:src="@drawable/crispy_fish"/>
 
 
@@ -39,5 +39,15 @@
         android:layout_gravity="center"
         android:textSize="25dp"
         android:textColor="#ec004fbe"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:padding="10dp"
+        android:textSize="25dp"
+        android:background="#ff1d9ec7"
+        android:text="@string/order_with_paypal"/>
 
 </LinearLayout>

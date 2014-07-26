@@ -68,7 +68,7 @@ public class StartActivity extends Activity {
     public void InitiateRestaurantSearch(){
 
         // Build intent for restaurant action
-        Intent restaurantIntent = new Intent(this, PaypalActivity.class);
+        Intent restaurantIntent = new Intent(this, RestaurantActivity.class);
         PendingIntent restaurantPendingIntent =
                 PendingIntent.getActivity(this, 0, restaurantIntent, 0);
 
@@ -157,7 +157,7 @@ public class StartActivity extends Activity {
         Notification notif = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("Awesome Place!")
-                .setContentText("You've passed this awesome place 3 times but you haven't tried it yet!")
+                .setContentText("You've passed this awesome place 5 times but you haven't tried it yet!")
                 .setContentIntent(restaurantPendingIntent)
                 .extend(wearableExtender)
                 .build();

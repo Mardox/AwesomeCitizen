@@ -22,5 +22,6 @@
     <string name="title_activity_start">StartActivity</string>
     <string name="offer_added">Special Offer Added!</string>
     <string name="time_to_redeem">Redeem in 5:54 Minutes!</string>
+    <string name="order_with_paypal">Order Now With Paypal - $5</string>
 
 </resources>
